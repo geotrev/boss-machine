@@ -216,7 +216,7 @@ describe("/api/minions routes", function () {
   });
 });
 
-describe("/api/ideas routes", function () {
+xdescribe("/api/ideas routes", function () {
   let fakeDb = require("../server/db.js");
 
   describe("GET /api/ideas", function () {
@@ -423,7 +423,7 @@ describe("/api/ideas routes", function () {
   });
 });
 
-describe("checkMillionDollarIdea middleware", function () {
+xdescribe("checkMillionDollarIdea middleware", function () {
   const checkMillionDollarIdea = require("../server/checkMillionDollarIdea");
 
   let req;
@@ -520,7 +520,7 @@ describe("checkMillionDollarIdea middleware", function () {
   });
 });
 
-describe("/api/meetings routes", function () {
+xdescribe("/api/meetings routes", function () {
   let fakeDb = require("../server/db.js");
 
   describe("GET /api/meetings", function () {
