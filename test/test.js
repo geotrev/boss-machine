@@ -474,8 +474,8 @@ describe("checkMillionDollarIdea middleware", function () {
   });
 
   it("calls next for ideas that will yield at least one million dollars", function () {
-    req.body.numWeeks = "1000000";
-    req.body.weeklyRevenue = "1";
+    req.body.numWeeks = 1000000;
+    req.body.weeklyRevenue = 1;
     checkMillionDollarIdea(req, response, nextCallback);
     expect(status).to.equal(null);
     expect(nextCalled).to.be.true;

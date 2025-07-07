@@ -41,6 +41,7 @@ router.put("/:id", (req, res) => {
     id,
     ...updatedMinionInfo,
   });
+
   if (updatedMinion) {
     res.status(200).send(updatedMinion);
   } else {

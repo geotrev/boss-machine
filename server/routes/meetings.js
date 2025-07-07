@@ -10,7 +10,11 @@ router.post("/", (req, res) => {
   const newMeeting = db.createMeeting();
   const newMeetingWithId = db.addToDatabase("meetings", newMeeting);
 
-  res.status(201).send(newMeetingWithId);
+  if (newMeetingWithId) {
+    res.status(201).send(newMeetingWithId);
+  } else {
+    res.status(400).send();
+  }
 });
 
 router.delete("/", (req, res) => {
