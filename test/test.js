@@ -520,7 +520,7 @@ xdescribe("checkMillionDollarIdea middleware", function () {
   });
 });
 
-xdescribe("/api/meetings routes", function () {
+describe("/api/meetings routes", function () {
   let fakeDb = require("../server/db.js");
 
   describe("GET /api/meetings", function () {

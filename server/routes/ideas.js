@@ -2,15 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db.js");
 
-// APIS:
-// - createMeeting
-// - getAllFromDatabase
-// - getFromDatabaseById
-// - addToDatabase
-// - updateInstanceInDatabase
-// - deleteFromDatabasebyId
-// - deleteAllFromDatabase
-
 router.get("/", (req, res) => {
   res.status(200).send(db.getAllFromDatabase("ideas"));
 });
@@ -44,10 +35,10 @@ router.post("/", (req, res) => {
 
 router.put("/:id", (req, res) => {
   const id = req.params.id;
-  const updatedIdea = req.body;
+  const updatedIdeaInfo = req.body;
   const idea = db.getFromDatabaseById("ideas", id);
 
-  if (Object.keys(updatedIdea).length === 0) {
+  if (Object.keys(updatedIdeaInfo).length === 0) {
     return res.status(404).send("Missing idea data");
   }
 
@@ -55,11 +46,11 @@ router.put("/:id", (req, res) => {
     return res.status(404).send("Invalid id provided or idea not found");
   }
 
-  const updatedMinion = db.updateInstanceInDatabase("ideas", {
+  const updatedIdea = db.updateInstanceInDatabase("ideas", {
     ...idea,
-    ...updatedIdea,
+    ...updatedIdeaInfo,
   });
-  res.status(200).send(updatedMinion);
+  res.status(200).send(updatedIdea);
 });
 
 router.delete("/:id", (req, res) => {

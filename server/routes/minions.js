@@ -2,15 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db.js");
 
-// APIS:
-// - createMeeting
-// - getAllFromDatabase
-// - getFromDatabaseById
-// - addToDatabase
-// - updateInstanceInDatabase
-// - deleteFromDatabasebyId
-// - deleteAllFromDatabase
-
 router.get("/", (req, res) => {
   res.status(200).send(db.getAllFromDatabase("minions"));
 });
