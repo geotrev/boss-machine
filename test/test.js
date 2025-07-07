@@ -423,7 +423,7 @@ describe("/api/ideas routes", function () {
   });
 });
 
-xdescribe("checkMillionDollarIdea middleware", function () {
+describe("checkMillionDollarIdea middleware", function () {
   const checkMillionDollarIdea = require("../server/checkMillionDollarIdea");
 
   let req;

@@ -36,21 +36,16 @@ router.post("/", (req, res) => {
 router.put("/:id", (req, res) => {
   const id = req.params.id;
   const updatedMinionInfo = req.body;
-  const minion = db.getFromDatabaseById("minions", id);
-
-  if (!updatedMinionInfo) {
-    return res.status(404).send("Missing minion data");
-  }
-
-  if (!minion) {
-    return res.status(404).send("Invalid id provided or minion not found");
-  }
 
   const updatedMinion = db.updateInstanceInDatabase("minions", {
-    ...minion,
+    id,
     ...updatedMinionInfo,
   });
-  res.status(200).send(updatedMinion);
+  if (updatedMinion) {
+    res.status(200).send(updatedMinion);
+  } else {
+    res.status(404).send("Invalid id provided or minion not found");
+  }
 });
 
 router.delete("/:id", (req, res) => {
