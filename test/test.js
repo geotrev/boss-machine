@@ -216,7 +216,7 @@ describe("/api/minions routes", function () {
   });
 });
 
-xdescribe("/api/ideas routes", function () {
+describe("/api/ideas routes", function () {
   let fakeDb = require("../server/db.js");
 
   describe("GET /api/ideas", function () {
