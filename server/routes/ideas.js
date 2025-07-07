@@ -55,6 +55,7 @@ router.put("/:id", validatePutData, checkMillionDollarIdea, (req, res) => {
   const id = req.params.id;
   const updatedIdeaInfo = req.body;
 
+  // NOTE: merge with existing row
   const updatedIdea = db.updateInstanceInDatabase("ideas", {
     id,
     ...updatedIdeaInfo,

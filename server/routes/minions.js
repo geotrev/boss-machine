@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db.js");
+const workRoutes = require("./work");
+
+router.use("/", workRoutes);
 
 router.get("/", (req, res) => {
   res.status(200).send(db.getAllFromDatabase("minions"));
@@ -20,7 +23,6 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   const newMinion = req.body;
   if (
-    !newMinion ||
     typeof newMinion.name !== "string" ||
     typeof newMinion.weaknesses !== "string" ||
     typeof newMinion.title !== "string" ||
@@ -37,6 +39,7 @@ router.put("/:id", (req, res) => {
   const id = req.params.id;
   const updatedMinionInfo = req.body;
 
+  // NOTE: merge with existing row
   const updatedMinion = db.updateInstanceInDatabase("minions", {
     id,
     ...updatedMinionInfo,
