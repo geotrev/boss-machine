@@ -5,19 +5,27 @@ const workRoutes = require("./work");
 
 router.use("/", workRoutes);
 
-router.get("/", (req, res) => {
+// middleware
+
+const setMinion = (req, res, next) => {
+  const minion = db.getFromDatabaseById("minions", req.params.id);
+
+  if (minion) {
+    req.minion = minion;
+    next();
+  } else {
+    res.status(404).send("Minion ID is invalid");
+  }
+};
+
+// routes
+
+router.get("/", (_, res) => {
   res.status(200).send(db.getAllFromDatabase("minions"));
 });
 
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  const minion = db.getFromDatabaseById("minions", id);
-
-  if (minion) {
-    res.status(200).send(minion);
-  } else {
-    res.status(404).send();
-  }
+router.get("/:id", setMinion, (req, res) => {
+  res.status(200).send(req.minion);
 });
 
 router.post("/", (req, res) => {
@@ -35,20 +43,20 @@ router.post("/", (req, res) => {
   res.status(201).send(newMinionWithId);
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", setMinion, (req, res) => {
   const id = req.params.id;
   const updatedMinionInfo = req.body;
 
-  // NOTE: merge with existing row
   const updatedMinion = db.updateInstanceInDatabase("minions", {
     id,
+    ...req.minion,
     ...updatedMinionInfo,
   });
 
   if (updatedMinion) {
     res.status(200).send(updatedMinion);
   } else {
-    res.status(404).send("Invalid id provided or minion not found");
+    res.status(404).send("Couldn't update idea, try again later");
   }
 });
 

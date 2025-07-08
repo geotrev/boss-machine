@@ -2,21 +2,20 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });
 const db = require("../db.js");
 
-// NOTE:
-// - Fix minions and ideas PUT methods to merge rows when partial data is provided
-// - Update these routes to precheck minionId and workId params
-// - Provide middleware that preloads work or minion data into the request object
-
 // middleware
 
 const setMinionWork = (req, res, next) => {
-  const id = req.params.minionId;
+  const minionId = req.params.minionId;
+  const allWork = db.getAllFromDatabase("work");
 
-  const allWork = db.getAllFromDatabase("work", id);
-  const minionsWork = allWork.filter((work) => work.minionId === id);
+  if (allWork) {
+    const minionsWork = allWork.filter((work) => work.minionId === minionId);
+    req.minionsWork = minionsWork;
 
-  req.minionsWork = minionsWork;
-  next();
+    next();
+  } else {
+    res.status(404).send("Couldn't retrieve work");
+  }
 };
 
 const isValidMinionId = (req, res, next) => {
@@ -28,7 +27,27 @@ const isValidMinionId = (req, res, next) => {
   if (isValidMinion) {
     next();
   } else {
-    res.status(404).send();
+    res.status(404).send("Minion ID is invalid");
+  }
+};
+
+const validateWork = (req, res, next) => {
+  const minionId = req.params.minionId;
+  const workId = req.params.workId;
+  const work = db.getFromDatabaseById("work", workId);
+
+  if (work) {
+    if (minionId !== undefined && work?.minionId !== minionId) {
+      return res
+        .status(400)
+        .send("Minion ID was invalid for the provided work");
+    }
+
+    req.work = work;
+
+    next();
+  } else {
+    res.status(404).send("Work ID is invalid");
   }
 };
 
@@ -54,6 +73,31 @@ router.post("/:minionId/work", isValidMinionId, (req, res) => {
   res.status(201).send(newWorkWithId);
 });
 
-router.put("/:minionId/work/:workId", isValidMinionId, (req, res) => {});
+router.put("/:minionId/work/:workId", validateWork, (req, res) => {
+  const workId = req.params.workId;
+  const updatedWorkInfo = req.body;
+
+  const updatedWork = db.updateInstanceInDatabase("work", {
+    id: workId,
+    ...req.work,
+    ...updatedWorkInfo,
+  });
+
+  if (updatedWork) {
+    res.status(200).send(updatedWork);
+  } else {
+    res.status(404).send("Couldn't update idea, try again later");
+  }
+});
+
+router.delete("/:minionId/work/:workId", validateWork, (req, res) => {
+  const isDeleted = db.deleteFromDatabasebyId("work", req.work.id);
+
+  if (isDeleted) {
+    return res.status(204).send();
+  }
+
+  res.status(404).send("Unable to delete work");
+});
 
 module.exports = router;
